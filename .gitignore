@@ -43,5 +43,5 @@ app-example
 /android
 
 # IDEs and editors
-.vscode/
 .idea/
+.vscode/
