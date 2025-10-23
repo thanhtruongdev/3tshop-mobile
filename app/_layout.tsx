@@ -9,6 +9,7 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ToastProvider from "toastify-react-native";
 import "../global.css";
 
 export const unstable_settings = {
@@ -25,6 +26,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="index" />
         </Stack>
+        <ToastProvider />
         <StatusBar style="auto" />
       </SafeAreaView>
     </ThemeProvider>
