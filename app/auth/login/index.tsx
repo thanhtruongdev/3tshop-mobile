@@ -5,6 +5,7 @@ import { TextButton } from "@/components/common/text-button";
 import BackgroundWrapper from "@/components/wrappers/background";
 import { COLORS } from "@/constants/colors";
 import { login } from "@/services/auth.service";
+import { isValidEmail } from "@/utils/auth-helper";
 import { useState } from "react";
 import {
   Image,
@@ -20,24 +21,63 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [emailValidation, setEmailValidation] = useState<string | null>(null);
+  const [passwordValidation, setPasswordValidation] = useState<string | null>(
+    null
+  );
 
   const handleOnSubmit = async () => {
-    setIsLoading(true);
-    try {
-      const result = await login({ email, password });
-      if (result) {
-        Toast.success("Đăng nhập thành công");
-        setIsLoading(false);
-      } else {
+    if (checkValidations()) {
+      setIsLoading(true);
+      try {
+        const result = await login({ email, password });
+        if (result) {
+          Toast.success("Đăng nhập thành công");
+          setIsLoading(false);
+        } else {
+          Toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.warn("Login error:", error);
         Toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         setIsLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      Toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
-      setIsLoading(false);
-      return;
     }
+  };
+
+  const checkValidations = () => {
+    if (!email.trim() && !password.trim()) {
+      setEmailValidation("Vui lòng nhập email");
+      setPasswordValidation("Vui lòng nhập mật khẩu");
+      return false;
+    } else if (!isValidEmail(email.trim())) {
+      setEmailValidation("Email không hợp lệ");
+      return false;
+    } else {
+      setEmailValidation(null);
+    }
+
+    if (!password.trim()) {
+      setPasswordValidation("Vui lòng nhập mật khẩu");
+      return false;
+    } else {
+      setPasswordValidation(null);
+    }
+    return true;
+  };
+
+  const onEmailChange = (text: string) => {
+    setEmail(text);
+    text ? setEmailValidation(null) : setEmailValidation("Vui lòng nhập email");
+  };
+
+  const onPasswordChange = (text: string) => {
+    setPassword(text);
+    text
+      ? setPasswordValidation(null)
+      : setPasswordValidation("Vui lòng nhập mật khẩu");
   };
 
   const handleOnForgotPassword = () => {
@@ -59,7 +99,7 @@ export default function LoginScreen() {
             }}
           >
             <Image
-              source={require("../../assets/logo/3T_Shop_white.png")}
+              source={require("../../../assets/logo/3T_Shop_white.png")}
               style={{ width: 100, height: 100 }}
             />
           </View>
@@ -85,28 +125,35 @@ export default function LoginScreen() {
                 <Text className="text-md text-gray-700 mb-1">Email</Text>
                 <TextInput
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={onEmailChange}
                   placeholder="email@example.com"
                   keyboardType="email-address"
                   autoCapitalize="none"
                   className="w-full border border-gray-200 rounded-md px-3 py-3 text-base text-gray-900 h-16"
                   placeholderTextColor="#9CA3AF"
                 />
-                <Caption
-                  text="Vui lòng nhập email hợp lệ"
-                  className="mt-1"
-                  type="ERROR"
-                />
+                {emailValidation && (
+                  <Caption
+                    text={emailValidation}
+                    className="mt-1"
+                    type="ERROR"
+                  />
+                )}
               </View>
 
               <View className="mt-4">
                 <Text className="text-md text-gray-700 mb-1">Mật khẩu</Text>
-                <PasswordInput value={password} onChangeText={setPassword} />
-                <Caption
-                  text="Vui lòng nhập mật khẩu"
-                  className="mt-1"
-                  type="ERROR"
+                <PasswordInput
+                  value={password}
+                  onChangeText={onPasswordChange}
                 />
+                {passwordValidation && (
+                  <Caption
+                    text={passwordValidation}
+                    className="mt-1"
+                    type="ERROR"
+                  />
+                )}
               </View>
 
               <TextButton

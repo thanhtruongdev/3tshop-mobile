@@ -1,6 +1,6 @@
-import { Redirect } from "expo-router";
+import { useAuthNavigation } from "@/hooks/useAuthNavigation";
 import "../global.css";
 
 export default function App() {
-  return <Redirect href="/auth" />;
+  useAuthNavigation();
 }

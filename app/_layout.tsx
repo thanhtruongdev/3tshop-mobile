@@ -26,7 +26,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="index" />
         </Stack>
-        <ToastProvider />
+        <ToastProvider useModal={false} />
         <StatusBar style="auto" />
       </SafeAreaView>
     </ThemeProvider>
