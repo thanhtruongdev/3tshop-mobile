@@ -4,7 +4,7 @@ import Caption from "@/components/common/caption";
 import { TextButton } from "@/components/common/text-button";
 import BackgroundWrapper from "@/components/wrappers/background";
 import { COLORS } from "@/constants/colors";
-import { login } from "@/services/auth.service";
+import { AuthService } from "@/services/auth.service";
 import { isValidEmail } from "@/utils/auth-helper";
 import { useState } from "react";
 import {
@@ -30,7 +30,7 @@ export default function LoginScreen() {
     if (checkValidations()) {
       setIsLoading(true);
       try {
-        const result = await login({ email, password });
+        const result = await AuthService.login({ email, password });
         if (result) {
           Toast.success("Đăng nhập thành công");
           setIsLoading(false);
