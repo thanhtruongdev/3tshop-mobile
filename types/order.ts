@@ -35,5 +35,5 @@ export interface DonDatHang {
 	NguoiDuyet?: NhanVien;
 	NguoiGiao?: NhanVien;
 	TrangThaiDH?: TrangThaiDH;
-	CT_DonDatHangs?: CT_DonDatHang[]; // child order details (see types/orderDetail.ts)
+	CT_DonDatHangs?: CT_DonDatHang[];
 }

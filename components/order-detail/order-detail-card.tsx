@@ -1,15 +1,15 @@
-import type { DonDatHang } from "@/types/order";
+import { OrderDetailData } from "@/types/order-detail-response";
 import React from "react";
 import { Text, View } from "react-native";
 import ItemsList from "./items-list";
 
 interface Props {
-  order: DonDatHang;
+  order: OrderDetailData;
 }
 
 export const OrderDetailCard: React.FC<Props> = ({ order }) => {
-  const total = order.CT_DonDatHangs
-    ? order.CT_DonDatHangs.reduce(
+  const total = order.DanhSachSanPham
+    ? order.DanhSachSanPham.reduce(
         (s, it) => s + Number(it.DonGia || 0) * (it.SoLuong || 0),
         0
       )
@@ -34,7 +34,7 @@ export const OrderDetailCard: React.FC<Props> = ({ order }) => {
           Danh sách sản phẩm
         </Text>
 
-        <ItemsList items={order.CT_DonDatHangs} />
+        <ItemsList items={order.DanhSachSanPham} />
       </View>
     </View>
   );

@@ -11,5 +11,7 @@ export const statusColor = (status?: string) => {
       return "bg-red-100 text-red-800";
     case ORDER_STATUS.TRAHANG[0]:
       return "bg-purple-100 text-purple-800";
+    default:
+      return "bg-gray-200 text-gray-700";
   }
 };

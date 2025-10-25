@@ -1,7 +1,6 @@
 import { ORDER_STATUS } from "@/constants/order-status";
 import type { DonDatHang } from "@/types/order";
 import type { CT_DonDatHang } from "@/types/orderDetail";
-import { statusColor } from "@/utils/status-colors";
 import { ChevronRight, MapPin } from "lucide-react-native";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
@@ -29,7 +28,7 @@ export const OrderItem = ({ order, onPress }: OrderItemProps) => {
       <View className="flex-row items-center p-3 bg-white rounded-lg">
         <Image
           source={require("../../assets/images/package.jpg")}
-          style={{ width: 40, height: 40 }}
+          style={{ width: 56, height: "100%" }}
           className="rounded-lg mr-3"
         />
 
@@ -76,7 +75,7 @@ export const OrderItem = ({ order, onPress }: OrderItemProps) => {
           {/* status at top-right */}
           <View>
             <View
-              className={`${statusColor(ORDER_STATUS[order.TrangThaiDH?.TrangThai!][0])} px-2 py-0.5 rounded-full`}
+              className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][2]} px-2 py-0.5 rounded-full`}
             >
               <Text className="text-sm font-medium">
                 {ORDER_STATUS[order.TrangThaiDH?.TrangThai!][1] || "--"}

@@ -1,20 +1,20 @@
-import type { CT_DonDatHang } from "@/types/orderDetail";
+import { DanhSachSanPham } from "@/types/order-product.type";
 import React from "react";
 import { FlatList, Image, Text, View } from "react-native";
 
 interface Props {
-  items?: CT_DonDatHang[];
+  items: DanhSachSanPham[];
 }
 
-const ItemRow: React.FC<{ item: CT_DonDatHang }> = ({ item }) => {
-  const name = item.ChiTietSanPham?.SanPham?.TenSP || "Sản phẩm";
-  const size = item.ChiTietSanPham?.KichThuoc?.TenKichThuoc || "";
-  const color = item.ChiTietSanPham?.Mau?.TenMau || "";
-  const price = Number(item.DonGia || 0);
+const ItemRow: React.FC<{ item: DanhSachSanPham }> = ({ item }) => {
+  const name = item.SanPham?.TenSP || "Sản phẩm";
+  const size = item.SanPham?.KichThuoc || "";
+  const color = item.SanPham?.MauSac?.TenMau || "";
+  const price = Number(item?.DonGia || 0);
   return (
     <View className="flex-row items-center bg-white py-3 rounded-lg ">
       <Image
-        source={require("../../assets/images/package.jpg")}
+        source={{ uri: item.SanPham?.HinhAnh?.DuongDan || "" }}
         style={{ width: 56, height: "100%" }}
         className="rounded-md mr-3"
       />

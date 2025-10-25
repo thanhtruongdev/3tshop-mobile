@@ -6,6 +6,7 @@ import BackgroundWrapper from "@/components/wrappers/background";
 import { COLORS } from "@/constants/colors";
 import { AuthService } from "@/services/auth.service";
 import { isValidEmail } from "@/utils/auth-helper";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   Image,
@@ -33,6 +34,7 @@ export default function LoginScreen() {
         const result = await AuthService.login({ email, password });
         if (result) {
           Toast.success("Đăng nhập thành công");
+          router.replace("/(tabs)/home");
           setIsLoading(false);
         } else {
           Toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");

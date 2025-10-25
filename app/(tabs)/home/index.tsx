@@ -1,51 +1,36 @@
 import { OrderItem } from "@/components/home/order-item";
 import { TABS } from "@/constants/order-status";
+import { OrderService } from "@/services/order.service";
 import { DonDatHang } from "@/types/order";
-import mockOrders from "@/utils/mock-data";
+import { getToken } from "@/utils/storage";
 import { useRouter } from "expo-router";
 import { Package2 } from "lucide-react-native";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
-
-type Section = {
-  title: string;
-  data: DonDatHang[];
-};
-
-const statusPriority = ["DANGGIAO"]; // prioritize this status first
-
-function groupByStatus(items: DonDatHang[]): Section[] {
-  const map = new Map<string, DonDatHang[]>();
-  items.forEach((it) => {
-    const key = it.TrangThaiDH?.TrangThai || "CHUA_TRANGTHAI";
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(it);
-  });
-
-  const sections: Section[] = [];
-
-  // add priority statuses first
-  statusPriority.forEach((s) => {
-    const group = map.get(s);
-    if (group) {
-      sections.push({ title: s, data: group });
-      map.delete(s);
-    }
-  });
-
-  // add remaining statuses sorted by name
-  const remaining = Array.from(map.entries()).sort((a, b) =>
-    a[0].localeCompare(b[0])
-  );
-  remaining.forEach(([k, v]) => sections.push({ title: k, data: v }));
-
-  return sections;
-}
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState<string>("DANGGIAO");
-
   const router = useRouter();
+  const [orders, setOrders] = useState<DonDatHang[]>([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const token = await getToken();
+      if (!token) {
+        return;
+      }
+      try {
+        const orders = await OrderService.getAssignedOrders();
+        if (orders && Array.isArray(orders)) {
+          setOrders(orders);
+        }
+      } catch (err) {
+        console.error("Failed to fetch assigned orders:", err);
+        setOrders([]);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const handleOrderPress = (orderId: number) => {
     router.push({
@@ -55,10 +40,13 @@ export default function HomeScreen() {
   };
 
   const filteredOrders = useMemo(() => {
-    return mockOrders.filter(
-      (o) => (o.TrangThaiDH?.TrangThai || "") === activeTab
-    );
-  }, [activeTab]);
+    if (orders) {
+      return orders.filter(
+        (o) => (o.TrangThaiDH?.TrangThai || "") === activeTab
+      );
+    }
+    return [];
+  }, [activeTab, orders]);
 
   const renderOrderItem = (item: DonDatHang) => (
     <OrderItem order={item} onPress={handleOrderPress} />
@@ -75,14 +63,14 @@ export default function HomeScreen() {
 
       {/* Tabs */}
       <View className="px-4">
-        <View className="flex-row space-x-3">
+        <View className="flex-row justify-between items-center">
           {TABS.map((t) => {
             const active = t.key === activeTab;
             return (
               <TouchableOpacity
                 key={t.key}
                 onPress={() => setActiveTab(t.key)}
-                className={`px-3 py-1 rounded-full mr-4 ${active ? "bg-yellow-900" : "bg-slate-100"}`}
+                className={`px-3 py-2 rounded-full ${active ? "bg-yellow-900" : "bg-slate-100"}`}
               >
                 <Text
                   className={`${active ? "text-white" : "text-slate-800"} text-md font-medium`}

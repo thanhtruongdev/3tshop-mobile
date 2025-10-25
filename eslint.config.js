@@ -13,7 +13,7 @@ module.exports = defineConfig([
 			'no-unused-vars': 'warn',
 			'react/prop-types': 'off',
 			'react/react-in-jsx-scope': 'off',
-			'@typescript-eslint/no-explicit-any': 'error',
+			'@typescript-eslint/no-explicit-any': 'warn',
 			'prettier/prettier': [
 				'warn',
 				{

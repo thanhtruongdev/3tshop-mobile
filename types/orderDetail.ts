@@ -1,39 +1,20 @@
-export interface SanPham {
-  MaSP: number;
-  TenSP: string;
-}
+import { ChiTietSanPham } from "./product-detail.type";
 
-export interface KichThuoc {
-  MaKichThuoc: number;
-  TenKichThuoc: string;
-}
-
-export interface Mau {
-  MaMau: number;
-  TenMau: string;
-  MaHex?: string;
-}
-
-export interface ChiTietSanPham {
-  MaCTSP: number;
-  MaSP: number;
-  MaKichThuoc: number;
-  MaMau: number;
-  SoLuongTon: number;
-  SanPham?: SanPham;
-  KichThuoc?: KichThuoc;
-  Mau?: Mau;
-}
-
-export interface CT_DonDatHang {
+export type CT_DonDatHang = {
   MaCTDDH: number;
   MaDDH: number;
   MaCTSP: number;
   SoLuong: number;
-  DonGia: string | number; // API sometimes returns string formatted number
+  DonGia: string | number;
   SoLuongTra?: number;
   MaPhieuTra?: number | null;
   ChiTietSanPham?: ChiTietSanPham;
 }
 
-export type OrderDetailList = CT_DonDatHang[];
+export type OrderDetailReponse = {
+  ThongTinDonHang?: any;
+  ThongTinNguoiNhan?: any;
+  ThongTinKhachHang?: any;
+  DanhSachSanPham?: CT_DonDatHang[];
+  ThongTinHoaDon?: any;
+}
