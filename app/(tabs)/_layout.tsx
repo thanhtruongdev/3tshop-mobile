@@ -3,7 +3,7 @@ import React from "react";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { COLORS } from "@/constants/colors";
-import { House, Settings } from "lucide-react-native";
+import { Box, User } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -20,15 +20,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Trang chủ",
-          tabBarIcon: ({ color }) => <House size={28} color={color} />,
+          title: "Đơn hàng",
+          tabBarIcon: ({ color }) => <Box size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="setting"
         options={{
-          title: "Cài đặt",
-          tabBarIcon: ({ color }) => <Settings size={28} color={color} />,
+          title: "Hồ sơ",
+          tabBarIcon: ({ color }) => <User size={28} color={color} />,
         }}
       />
     </Tabs>

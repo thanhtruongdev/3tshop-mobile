@@ -1,3 +1,4 @@
+import { getToken } from '@/utils/storage';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 const BASE_URL = "https://wallaby-artistic-horse.ngrok-free.app";
@@ -13,10 +14,19 @@ const instance: AxiosInstance = axios.create({
 });
 
 // Request interceptor to inject token
+// Request interceptor to inject token. We attempt to use the in-memory token
+// if available, otherwise fall back to reading the persisted token. Using an
+// async interceptor avoids a race where components fire requests before the
+// app-level `setAuthToken` has been called.
 instance.interceptors.request.use(
-	(config) => {
-		if (token && config.headers) {
-			config.headers["Authorization"] = `Bearer ${token}`;
+	async (config) => {
+		try {
+			const t = token ?? (await getToken());
+			if (t && config.headers) {
+				config.headers["Authorization"] = `Bearer ${t}`;
+			}
+		} catch (e) {
+			// ignore storage read errors and proceed without Authorization header
 		}
 		return config;
 	},
