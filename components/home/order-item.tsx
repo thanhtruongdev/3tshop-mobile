@@ -63,7 +63,6 @@ export const OrderItem = ({ order, onPress }: OrderItemProps) => {
             ) : null}
           </View>
         </View>
-
         <View
           className="ml-3 items-end"
           style={{
@@ -75,9 +74,11 @@ export const OrderItem = ({ order, onPress }: OrderItemProps) => {
           {/* status at top-right */}
           <View>
             <View
-              className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][2]} px-2 py-0.5 rounded-full`}
+              className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][2] ?? "bg-slate-200 text-slate-700"} px-2 py-0.5 rounded-md`}
             >
-              <Text className="text-sm font-medium">
+              <Text
+                className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][3] ?? "bg-slate-100"} text-sm font-medium`}
+              >
                 {ORDER_STATUS[order.TrangThaiDH?.TrangThai!][1] || "--"}
               </Text>
             </View>

@@ -40,7 +40,11 @@ export default function SettingsScreen() {
       <ProfileView emp={user} />
 
       <View className="mt-6">
-        <Button text="Đăng xuất" onSubmit={() => setModalVisible(true)} />
+        <Button
+          text="Đăng xuất"
+          className="rounded-full"
+          onSubmit={() => setModalVisible(true)}
+        />
       </View>
 
       <LogoutModal

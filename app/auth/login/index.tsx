@@ -168,6 +168,7 @@ export default function LoginScreen() {
                 onSubmit={handleOnSubmit}
                 text="Đăng nhập"
                 loading={isLoading}
+                className="rounded-full mt-4"
                 loadingText="Đang đăng nhập..."
               />
             </View>

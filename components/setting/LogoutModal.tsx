@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, View } from "react-native";
+import { Button } from "../common/button";
 
 interface Props {
   visible: boolean;
@@ -20,20 +21,16 @@ const LogoutModal: React.FC<Props> = ({ visible, onConfirm, onCancel }) => {
           </Text>
 
           <View className="flex-row justify-center gap-8 items-center">
-            <TouchableOpacity
-              onPress={onCancel}
-              className="px-3 py-3 bg-slate-100 rounded w-32"
-            >
-              <Text className="text-base text-slate-600 text-center">Hủy</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onConfirm}
-              className="px-3 py-3 bg-yellow-800 rounded w-32"
-            >
-              <Text className="text-base text-center text-white">
-                Đăng xuất
-              </Text>
-            </TouchableOpacity>
+            <Button
+              onSubmit={onCancel}
+              className="w-36 rounded-full bg-gray-400"
+              text="Hủy"
+            />
+            <Button
+              onSubmit={onConfirm}
+              className="w-36 rounded-full bg-yellow-800"
+              text="Đăng xuất"
+            />
           </View>
         </View>
       </View>
