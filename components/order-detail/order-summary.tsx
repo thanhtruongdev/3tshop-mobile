@@ -60,9 +60,11 @@ export const OrderSummary: React.FC<Props> = ({ order }) => {
           </Text>
           {order.ThongTinDonHang?.TrangThai ? (
             <View
-              className={`${ORDER_STATUS[order.ThongTinDonHang?.TrangThai?.Ten][2]} px-2 py-0.5 rounded-full`}
+              className={`${ORDER_STATUS[order.ThongTinDonHang?.TrangThai?.Ten][2]} px-2 py-1 rounded-md mt-1`}
             >
-              <Text className="text-md font-medium text-amber-800">
+              <Text
+                className={`text-md font-medium ${ORDER_STATUS[order.ThongTinDonHang?.TrangThai?.Ten][3]}`}
+              >
                 {ORDER_STATUS[order.ThongTinDonHang?.TrangThai?.Ten][1]}
               </Text>
             </View>

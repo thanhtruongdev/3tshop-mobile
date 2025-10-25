@@ -1,4 +1,4 @@
-import { BottomAction } from "@/components/order-detail/bottom-action";
+import { Button } from "@/components/common/button";
 import DetailHeader from "@/components/order-detail/detail-header";
 import OrderDetailCard from "@/components/order-detail/order-detail-card";
 import OrderSummary from "@/components/order-detail/order-summary";
@@ -33,6 +33,12 @@ export default function OrderDetailScreen() {
   const handleOnCompleteOrder = () => {
     console.log("Complete order");
   };
+  const handleOnShowInvoice = () => {
+    router.push({
+      pathname: "/invoice",
+      params: { invoiceId: String(order?.ThongTinHoaDon?.SoHD) },
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
@@ -53,13 +59,46 @@ export default function OrderDetailScreen() {
         <View>
           <DetailHeader onBack={() => router.back()} />
           <OrderSummary order={order} />
-          <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
+          <ScrollView
+            contentContainerStyle={{
+              paddingBottom: 24,
+            }}
+            style={{
+              display: "flex",
+              flexGrow: 1,
+            }}
+          >
             <OrderDetailCard order={order} />
           </ScrollView>
-          {order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" && (
-            <BottomAction onSubmit={handleOnCompleteOrder} />
-          )}
         </View>
+      )}
+
+      {/* Sticky bottom action bar (pins to screen bottom and respects safe area) */}
+      {order && (
+        <SafeAreaView
+          edges={["bottom"]}
+          className="absolute left-0 right-0 bottom-0 bg-white px-4 py-4 z-50 border-t border-slate-100"
+        >
+          <View
+            className={`flex-row ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "justify-between" : "justify-center"}`}
+          >
+            {order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" && (
+              <>
+                <Button
+                  text="Hoàn tất đơn hàng"
+                  onSubmit={handleOnCompleteOrder}
+                  className="px-4 rounded-full w-1/2"
+                />
+                <View className="w-2" />
+              </>
+            )}
+            <Button
+              text="Xem hóa đơn"
+              onSubmit={handleOnShowInvoice}
+              className={`px-4 rounded-full ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "w-1/2" : "w-full"}`}
+            />
+          </View>
+        </SafeAreaView>
       )}
     </SafeAreaView>
   );

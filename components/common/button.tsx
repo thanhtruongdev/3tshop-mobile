@@ -5,6 +5,7 @@ interface ButtonProps {
   text: string;
   loading?: boolean;
   loadingText?: string;
+  className?: string;
 }
 
 export const Button = ({
@@ -12,13 +13,14 @@ export const Button = ({
   text,
   loading,
   loadingText,
+  className,
 }: ButtonProps) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onSubmit}
       disabled={loading}
-      className="mt-6 bg-yellow-800 rounded-md py-3 items-center justify-center flex-row gap-1"
+      className={`bg-yellow-800 py-3 items-center justify-center flex-row gap-1 ${className}`}
       style={{ elevation: 1, height: 48, opacity: loading ? 0.7 : 1 }}
     >
       {loading ? (
