@@ -18,6 +18,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false, statusBarStyle: "dark" }}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="index" />
+          <Stack.Screen name="order-detail/index" />
         </Stack>
         <ToastProvider useModal={false} />
         <StatusBar style="auto" />
