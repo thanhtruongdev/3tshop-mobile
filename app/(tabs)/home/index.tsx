@@ -1,36 +1,59 @@
 import { OrderItem } from "@/components/home/order-item";
+import { COLORS } from "@/constants/colors";
 import { TABS } from "@/constants/order-status";
 import { OrderService } from "@/services/order.service";
 import { DonDatHang } from "@/types/order";
 import { getToken } from "@/utils/storage";
 import { useRouter } from "expo-router";
 import { Package2 } from "lucide-react-native";
-import { useEffect, useMemo, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState<string>("DANGGIAO");
   const router = useRouter();
   const [orders, setOrders] = useState<DonDatHang[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrders = async () => {
+    const token = await getToken();
+    if (!token) {
+      return;
+    }
+    setLoading(true);
+    try {
+      const orders = await OrderService.getAssignedOrders();
+      if (orders && Array.isArray(orders)) {
+        setOrders(orders);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error("Failed to fetch assigned orders:", err);
+      setOrders([]);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      const token = await getToken();
-      if (!token) {
-        return;
-      }
-      try {
-        const orders = await OrderService.getAssignedOrders();
-        if (orders && Array.isArray(orders)) {
-          setOrders(orders);
-        }
-      } catch (err) {
-        console.error("Failed to fetch assigned orders:", err);
-        setOrders([]);
-      }
-    };
     fetchOrders();
   }, []);
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await fetchOrders();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing]);
 
   const handleOrderPress = (orderId: number) => {
     router.push({
@@ -51,6 +74,15 @@ export default function HomeScreen() {
   const renderOrderItem = (item: DonDatHang) => (
     <OrderItem order={item} onPress={handleOrderPress} />
   );
+
+  if (loading && !refreshing) {
+    return (
+      <View className="flex-col justify-center items-center gap-2 flex-1">
+        <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+        <Text>Đang tải danh sách đơn hàng...</Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-slate-50">
@@ -85,8 +117,11 @@ export default function HomeScreen() {
 
       <FlatList
         data={filteredOrders}
+        scrollEnabled={true}
         renderItem={({ item }) => renderOrderItem(item)}
         keyExtractor={(item) => item.MaDDH.toString()}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         contentContainerStyle={{
           paddingHorizontal: 16,
           paddingBottom: 24,
@@ -96,7 +131,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         style={{ width: "100%" }}
         ListEmptyComponent={() => (
-          <View className="px-4 mt-8 items-center">
+          <View className=" flex-col flex-1 gap-4 mt-20 items-center justify-center">
             <Package2 size={70} color={"#64748b"} />
             <Text className="text-sm text-slate-500">
               Không có đơn hàng cho trạng thái này

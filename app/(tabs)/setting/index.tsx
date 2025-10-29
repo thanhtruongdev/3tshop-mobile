@@ -42,8 +42,9 @@ export default function SettingsScreen() {
       <View className="mt-6">
         <Button
           text="Đăng xuất"
-          className="rounded-full"
+          textClassName="text-white"
           onSubmit={() => setModalVisible(true)}
+          variant={"PRIMARY"}
         />
       </View>
 

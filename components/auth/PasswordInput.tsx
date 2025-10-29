@@ -30,6 +30,7 @@ export default function PasswordInput({
         <TouchableOpacity
           onPress={() => setSecure((s) => !s)}
           className="ml-2 px-2 py-1"
+          hitSlop={12}
         >
           {secure ? (
             <Eye size={20} color="#825B32" />

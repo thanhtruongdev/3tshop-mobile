@@ -1,7 +1,6 @@
 import PasswordInput from "@/components/auth/PasswordInput";
 import { Button } from "@/components/common/button";
 import Caption from "@/components/common/caption";
-import { TextButton } from "@/components/common/text-button";
 import BackgroundWrapper from "@/components/wrappers/background";
 import { COLORS } from "@/constants/colors";
 import { AuthService } from "@/services/auth.service";
@@ -157,19 +156,21 @@ export default function LoginScreen() {
                   />
                 )}
               </View>
-
+              {/* 
               <TextButton
                 onPress={handleOnForgotPassword}
                 text="Quên mật khẩu?"
                 buttonClassName="items-end"
-              />
+              /> */}
 
               <Button
                 onSubmit={handleOnSubmit}
                 text="Đăng nhập"
                 loading={isLoading}
-                className="rounded-full mt-4"
+                className="rounded-full mt-8"
+                textClassName="text-white"
                 loadingText="Đang đăng nhập..."
+                variant={"PRIMARY"}
               />
             </View>
           </View>
