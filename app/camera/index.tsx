@@ -1,5 +1,6 @@
 import DetailHeader from "@/components/order-detail/detail-header";
 import AnimatedIconButton from "@/components/ui/AnimatedIconButton";
+import { COLORS } from "@/constants/colors";
 import { OrderService } from "@/services/order.service";
 import { getRotationStyle } from "@/utils/animation";
 import { getFileUri } from "@/utils/get-uri";
@@ -11,6 +12,7 @@ import {
   ActivityIndicator,
   Image,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -83,9 +85,6 @@ export default function CameraPage() {
     }
   };
 
-  // if (!hasPermission) return <PermissionsPage />;
-  //   if (device == null) return <NoCameraDeviceError />;
-
   if (photo) {
     return (
       <SafeAreaView className="flex-1">
@@ -107,7 +106,7 @@ export default function CameraPage() {
               disabled={isUploading}
               style={[styles.actionButton, styles.cancelButton]}
             >
-              <X color={"#FFFFFF"} width={26} height={26} />
+              <X color={"#111827"} width={26} height={26} />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -130,16 +129,20 @@ export default function CameraPage() {
 
   return (
     <SafeAreaView className="flex-1">
-      <DetailHeader onBack={() => router.back()} className="bg-transparent" />
+      <DetailHeader
+        onBack={() => router.back()}
+        className="bg-transparent"
+        title="Chụp ảnh xác minh"
+      />
       <View className="flex-1">
-        <Camera
-          ref={camera}
-          style={StyleSheet.absoluteFill}
-          device={device!}
-          isActive={true}
-          resizeMode="cover"
-          photo={true}
-        />
+            <Camera
+              ref={camera}
+              style={StyleSheet.absoluteFill}
+              device={device!}
+              isActive={true}
+              resizeMode="cover"
+              photo={true}
+            />
       </View>
       <View className="absolute bottom-24 flex-row w-full justify-evenly items-center">
         <AnimatedIconButton
@@ -232,12 +235,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   cancelButton: {
-    backgroundColor: "#F55050",
+    backgroundColor: "#f3f4f6",
     borderWidth: 2,
     borderColor: "#fff",
   },
   acceptButton: {
-    backgroundColor: "#16a34a",
+    backgroundColor: COLORS.PRIMARY,
     borderWidth: 2,
     borderColor: "#fff",
   },
