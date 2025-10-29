@@ -1,5 +1,6 @@
 import { Button } from "@/components/common/button";
 import DetailHeader from "@/components/order-detail/detail-header";
+import { GrantPermission } from "@/components/order-detail/grant-permission";
 import OrderDetailCard from "@/components/order-detail/order-detail-card";
 import OrderSummary from "@/components/order-detail/order-summary";
 import { COLORS } from "@/constants/colors";
@@ -9,12 +10,17 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useCameraPermission } from "react-native-vision-camera";
 
 export default function OrderDetailScreen() {
+  const { hasPermission, requestPermission } = useCameraPermission();
+
   const { orderId } = useLocalSearchParams();
   const id = orderId ? Number(orderId) : NaN;
   const [order, setOrder] = useState<OrderDetailData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPermissionModal, setShowPermissionModal] =
+    useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,7 +37,32 @@ export default function OrderDetailScreen() {
   }, [orderId]);
 
   const handleOnCompleteOrder = () => {
-    console.log("Complete order");
+    (async () => {
+      if (!hasPermission) {
+        // Ask for permission first (system prompt)
+        try {
+          const granted = await requestPermission();
+          // requestPermission may return a boolean or void; if falsey, fallback to hasPermission
+          const isGranted =
+            typeof granted === "boolean" ? granted : hasPermission;
+          if (!isGranted) {
+            // show modal to guide user to app settings
+            setShowPermissionModal(true);
+            return;
+          }
+        } catch (e) {
+          // if request throws, show modal
+          setShowPermissionModal(true);
+          return;
+        }
+      }
+
+      // permission is available
+      router.navigate({
+        pathname: "/camera",
+        params: { orderId: id },
+      });
+    })();
   };
   const handleOnShowInvoice = () => {
     router.push({
@@ -42,6 +73,10 @@ export default function OrderDetailScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
+      <GrantPermission
+        showPermissionModal={showPermissionModal}
+        onClose={() => setShowPermissionModal(false)}
+      />
       {isLoading && (
         <View className="flex-1 justify-center items-center gap-4">
           <ActivityIndicator size="large" color={COLORS.PRIMARY} />
@@ -86,13 +121,9 @@ export default function OrderDetailScreen() {
               <>
                 <Button
                   text="Hoàn tất đơn hàng"
-                  className="px-4 rounded-full w-1/2"
-                  onSubmit={() =>
-                    router.navigate({
-                      pathname: "/camera",
-                      params: { orderId: order.ThongTinDonHang?.MaDDH },
-                    })
-                  }
+                  className="px-4 rounded-full w-1/2 "
+                  textClassName="text-white"
+                  onSubmit={handleOnCompleteOrder}
                   variant={"PRIMARY"}
                 />
                 <View className="w-2" />
@@ -101,8 +132,9 @@ export default function OrderDetailScreen() {
             <Button
               text="Xem hóa đơn"
               onSubmit={handleOnShowInvoice}
-              className={`px-4 rounded-full ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "w-1/2" : "w-full"}`}
+              className={`px-4 rounded-full text-yellow-900 ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "w-1/2" : "w-full"}`}
               variant={"SECONDARY"}
+              textClassName="text-yellow-900"
             />
           </View>
         </SafeAreaView>

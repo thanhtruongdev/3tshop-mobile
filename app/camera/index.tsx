@@ -15,11 +15,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Camera,
-  useCameraDevice,
-  useCameraPermission,
-} from "react-native-vision-camera";
+import { Camera, useCameraDevice } from "react-native-vision-camera";
 import { Toast } from "toastify-react-native";
 
 export default function CameraPage() {
@@ -39,7 +35,6 @@ export default function CameraPage() {
       "telephoto-camera",
     ],
   });
-  const { hasPermission } = useCameraPermission();
 
   const takePhoto = async () => {
     if (camera.current) {
@@ -60,8 +55,6 @@ export default function CameraPage() {
   const toggleFlash = () => {
     setFlashMode((prev) => (prev === "on" ? "off" : "on"));
   };
-
-  // Use AnimatedIconButton component for animated icon buttons (scale + optional rotate)
 
   const handleComfirmPhoto = async () => {
     try {
@@ -90,7 +83,7 @@ export default function CameraPage() {
     }
   };
 
-  //   if (!hasPermission) return <PermissionsPage />;
+  // if (!hasPermission) return <PermissionsPage />;
   //   if (device == null) return <NoCameraDeviceError />;
 
   if (photo) {
