@@ -40,6 +40,12 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+      "react-native-vision-camera",
+        {
+          "cameraPermissionText": "3T Shop Delivery needs access to your Camera."
+        }
       ]
     ],
     "experiments": {

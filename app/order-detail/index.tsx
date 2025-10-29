@@ -86,8 +86,14 @@ export default function OrderDetailScreen() {
               <>
                 <Button
                   text="Hoàn tất đơn hàng"
-                  onSubmit={handleOnCompleteOrder}
                   className="px-4 rounded-full w-1/2"
+                  onSubmit={() =>
+                    router.navigate({
+                      pathname: "/camera",
+                      params: { orderId: order.ThongTinDonHang?.MaDDH },
+                    })
+                  }
+                  variant={"PRIMARY"}
                 />
                 <View className="w-2" />
               </>
@@ -96,6 +102,7 @@ export default function OrderDetailScreen() {
               text="Xem hóa đơn"
               onSubmit={handleOnShowInvoice}
               className={`px-4 rounded-full ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "w-1/2" : "w-full"}`}
+              variant={"SECONDARY"}
             />
           </View>
         </SafeAreaView>

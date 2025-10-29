@@ -1,5 +1,5 @@
-import { get } from "@/lib/http";
-import { DonDatHang } from "@/types/order";
+import { get, put } from "@/lib/http";
+import { ConfirmDelivery, DonDatHang } from "@/types/order";
 import OrderDetailResponse, { OrderDetailData } from "@/types/order-detail-response";
 
 export const OrderService = {
@@ -20,5 +20,13 @@ export const OrderService = {
             return res.data;
         }
         return null;
+    },
+    confirmDelivery: async (o : ConfirmDelivery): Promise<boolean> => {
+        const res = await put<any>(`/api/orders/delivery/confirm/image`, o);
+        if (res && res.data) {
+            console.debug("Confirm delivery response:", res.data);
+            return res.data !== null;
+        }
+        return false;
     }
 };

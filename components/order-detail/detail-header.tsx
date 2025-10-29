@@ -5,14 +5,18 @@ import { Text, TouchableOpacity, View } from "react-native";
 interface Props {
   title?: string;
   onBack?: () => void;
+  className?: string;
 }
 
 export const DetailHeader: React.FC<Props> = ({
   title = "Chi tiết đơn hàng",
   onBack,
+  className,
 }) => {
   return (
-    <View className="flex-row items-center px-4 pt-4 pb-3 bg-white">
+    <View
+      className={`flex-row items-center px-4 pt-4 pb-3 bg-white ${className}`}
+    >
       <TouchableOpacity onPress={onBack} className="p-2">
         <ChevronLeft size={20} color="#374151" />
       </TouchableOpacity>

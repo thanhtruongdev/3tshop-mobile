@@ -37,3 +37,8 @@ export interface DonDatHang {
 	TrangThaiDH?: TrangThaiDH;
 	CT_DonDatHangs?: CT_DonDatHang[];
 }
+
+export type ConfirmDelivery = {
+	id: number;
+	image: string;
+}
