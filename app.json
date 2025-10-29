@@ -52,7 +52,20 @@
         {
           "cameraPermissionText": "3T Shop Delivery needs access to your Camera."
         }
-      ]
+      ],
+      "expo-font",
+			[
+				"expo-build-properties",
+				{
+					"android": {
+						"usesCleartextTraffic": true,
+						"extraProguardRules": "",
+						"manifestApplicationAttributes": {
+							"android:networkSecurityConfig": "@xml/network_security_config"
+						}
+					}
+				}
+			]
     ],
     "experiments": {
       "typedRoutes": true,
