@@ -1,7 +1,7 @@
 import { getToken } from '@/utils/storage';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
-const BASE_URL = "https://wallaby-artistic-horse.ngrok-free.app";
+const BASE_URL = "https://api.3tshop.thienduong.info";
 
 let token: string | null = null;
 

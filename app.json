@@ -54,18 +54,18 @@
         }
       ],
       "expo-font",
-			[
-				"expo-build-properties",
-				{
-					"android": {
-						"usesCleartextTraffic": true,
-						"extraProguardRules": "",
-						"manifestApplicationAttributes": {
-							"android:networkSecurityConfig": "@xml/network_security_config"
-						}
-					}
-				}
-			]
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true,
+            "extraProguardRules": "",
+            "manifestApplicationAttributes": {
+              "android:networkSecurityConfig": "@xml/network_security_config"
+            }
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -74,7 +74,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "9f828bea-ea31-45e6-af35-38f8019ee29c"
+        "projectId": "20209117-e8ef-4aee-8525-0e04e75313fb"
       }
     }
   }

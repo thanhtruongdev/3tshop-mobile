@@ -81,9 +81,6 @@ export default function LoginScreen() {
       : setPasswordValidation("Vui lòng nhập mật khẩu");
   };
 
-  const handleOnForgotPassword = () => {
-    console.log("Forgot Password pressed");
-  };
   return (
     <BackgroundWrapper className="">
       <KeyboardAvoidingView
@@ -172,6 +169,9 @@ export default function LoginScreen() {
                 loadingText="Đang đăng nhập..."
                 variant={"PRIMARY"}
               />
+              <Text className="text-sm text-gray-500 text-center mt-4">
+                {`Chỉ nhân viên giao hàng mới được phép \nđăng nhập vào ứng dụng này.`}
+              </Text>
             </View>
           </View>
         </View>
