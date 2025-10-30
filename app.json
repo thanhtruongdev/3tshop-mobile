@@ -9,7 +9,10 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "3T Shop Delivery needs access to your Camera."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +23,10 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.thanhtruong7103.delivery3tshop"
+      "package": "com.thanhtruong7103.delivery3tshop",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,15 +48,34 @@
         }
       ],
       [
-      "react-native-vision-camera",
+        "react-native-vision-camera",
         {
           "cameraPermissionText": "3T Shop Delivery needs access to your Camera."
+        }
+      ],
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true,
+            "extraProguardRules": "",
+            "manifestApplicationAttributes": {
+              "android:networkSecurityConfig": "@xml/network_security_config"
+            }
+          }
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "20209117-e8ef-4aee-8525-0e04e75313fb"
+      }
     }
   }
 }

@@ -74,7 +74,7 @@ export const OrderItem = ({ order, onPress }: OrderItemProps) => {
           {/* status at top-right */}
           <View>
             <View
-              className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][2] ?? "bg-slate-200 text-slate-700"} px-2 py-0.5 rounded-md`}
+              className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][2] ?? "bg-green-200 text-green-200"} px-2 py-0.5 rounded-lg`}
             >
               <Text
                 className={`${ORDER_STATUS[order.TrangThaiDH?.TrangThai!][3] ?? "bg-slate-100"} text-sm font-medium`}
