@@ -1,6 +1,12 @@
 import { NhanVien } from "@/types/user.type";
 import { formatCurrency } from "@/utils/formatter";
-import { DollarSign, MapPin } from "lucide-react-native";
+import {
+  Calendar,
+  DollarSign,
+  IdCard,
+  Mail,
+  MapPin,
+} from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 
@@ -19,59 +25,114 @@ const ProfileView: React.FC<Props> = ({ emp }) => {
     return last.slice(0, 2).toUpperCase();
   })();
 
-  return (
-    <View className="bg-white p-5 rounded-xl shadow-md">
-      {/* Header */}
-      <View className="flex-row items-center">
-        <View className="w-16 h-16 rounded-full bg-yellow-100 items-center justify-center mr-4">
-          <Text className="text-2xl font-bold text-yellow-800">{initials}</Text>
-        </View>
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN");
+  };
 
-        <View className="flex-1">
-          <Text className="text-2xl font-extrabold text-slate-900">
+  return (
+    <View>
+      {/* Header Card with Avatar */}
+      <View className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+        <View className="items-center">
+          {/* Avatar Circle */}
+          <View className="w-24 h-24 rounded-full bg-yellow-900 items-center justify-center mb-4">
+            <Text className="text-3xl font-bold text-white">{initials}</Text>
+          </View>
+
+          {/* Name */}
+          <Text className="text-2xl font-bold text-slate-900 mb-1">
             {emp?.TenNV ?? "-"}
           </Text>
-          <Text className="text-sm text-slate-400 mt-1">
-            Mã nhân viên:{" "}
-            <Text className="text-base font-medium text-slate-800">
-              {emp?.MaNV ?? "-"}
-            </Text>
-          </Text>
-        </View>
-      </View>
 
-      {/* Details cards */}
-      <View className="mt-5 space-y-3 flex-col gap-4">
-        <View className="bg-slate-50 p-4 rounded-lg flex-row gap-4 items-center">
-          <MapPin size={28} color="#6b7280" />
-          <View className="flex-col gap-2">
-            <Text className="text-sm text-slate-500">Địa chỉ</Text>
-            <Text className="text-lg font-medium text-slate-800">
-              {emp?.DiaChi ?? "-"}
-            </Text>
-          </View>
-        </View>
-        <View className="bg-slate-50 p-4 rounded-lg flex-row gap-4 items-center">
-          <DollarSign size={28} color="#6b7280" />
-          <View className="flex-col gap-2">
-            <Text className="text-sm text-slate-500">Lương</Text>
-            <Text className="text-lg font-medium text-slate-800">
-              {formatCurrency(emp?.Luong)}
+          {/* Employee ID Badge */}
+          <View className="bg-slate-100 px-4 py-2 rounded-full">
+            <Text className="text-sm font-semibold text-slate-700">
+              Mã NV: {emp?.MaNV ?? "-"}
             </Text>
           </View>
         </View>
       </View>
 
-      {/* Account info section */}
-      <View className="mt-5 border-t border-slate-100 pt-4">
-        <Text className="text-md text-slate-500">Thông tin tài khoản</Text>
-        <View className="mt-2">
-          <Text className="text-base font-medium text-slate-700">
-            Mã tài khoản: {account?.MaTK ?? emp?.MaTK ?? "-"}
-          </Text>
-          <Text className="text-base text-slate-700 mt-1">
-            Email: {account?.Email ?? "-"}
-          </Text>
+      {/* Info Cards Grid */}
+      <View className="mt-4 gap-3">
+        {/* Date of Birth */}
+        {emp?.NgaySinh && (
+          <View className="bg-white rounded-xl p-4 border border-slate-200 flex-row items-center">
+            <View className="w-10 h-10 bg-slate-100 rounded-full items-center justify-center mr-4">
+              <Calendar size={20} color="#64748b" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-xs text-slate-500 mb-1">Ngày sinh</Text>
+              <Text className="text-base font-semibold text-slate-900">
+                {formatDate(emp.NgaySinh)}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* Address */}
+        <View className="bg-white rounded-xl p-4 border border-slate-200 flex-row items-start">
+          <View className="w-10 h-10 bg-slate-100 rounded-full items-center justify-center mr-4">
+            <MapPin size={20} color="#64748b" />
+          </View>
+          <View className="flex-1">
+            <Text className="text-xs text-slate-500 mb-1">Địa chỉ</Text>
+            <Text className="text-sm font-medium text-slate-900 leading-5">
+              {emp?.DiaChi ?? "Chưa cập nhật"}
+            </Text>
+          </View>
+        </View>
+
+        {/* Salary */}
+        <View className="bg-white rounded-xl p-4 border border-slate-200 flex-row items-center">
+          <View className="w-10 h-10 bg-yellow-100 rounded-full items-center justify-center mr-4">
+            <DollarSign size={20} color="#78350f" />
+          </View>
+          <View className="flex-1">
+            <Text className="text-xs text-slate-500 mb-1">Mức lương</Text>
+            <Text className="text-lg font-bold text-yellow-900">
+              {emp?.Luong ? formatCurrency(emp.Luong) : "Chưa cập nhật"}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Account Information Section */}
+      <View className="mt-6">
+        <Text className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider px-1">
+          Thông tin tài khoản
+        </Text>
+
+        <View className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
+          {/* Account ID */}
+          <View className="p-4 flex-row items-center">
+            <View className="w-10 h-10 bg-slate-100 rounded-full items-center justify-center mr-4">
+              <IdCard size={20} color="#64748b" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-xs text-slate-500 mb-0.5">
+                Mã tài khoản
+              </Text>
+              <Text className="text-sm font-semibold text-slate-900">
+                {account?.MaTK ?? emp?.MaTK ?? "-"}
+              </Text>
+            </View>
+          </View>
+
+          {/* Email */}
+          <View className="p-4 flex-row items-center">
+            <View className="w-10 h-10 bg-slate-100 rounded-full items-center justify-center mr-4">
+              <Mail size={20} color="#64748b" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-xs text-slate-500 mb-0.5">Email</Text>
+              <Text className="text-sm font-medium text-slate-900">
+                {account?.Email ?? "Chưa cập nhật"}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     </View>

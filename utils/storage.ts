@@ -1,4 +1,5 @@
 import { TOKEN_KEY, USER_INFO_KEY } from '@/constants/storage';
+import { NhanVien } from '@/types/user.type';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getToken = async () => {
@@ -14,7 +15,7 @@ export const removeToken = async () => {
     await AsyncStorage.removeItem(TOKEN_KEY);
 }
 
-export const setUserInfor = async (userInfo: object) => {
+export const setUserInfor = async (userInfo: NhanVien) => {
     await AsyncStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
 }
 

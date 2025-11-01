@@ -1,7 +1,7 @@
-import { getToken } from '@/utils/storage';
+import { BASE_URL } from '@/constants/apis';
+import { getToken, removeToken, removeUserInfor } from '@/utils/storage';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-
-const BASE_URL = "https://api.3tshop.thienduong.info";
+import { router } from 'expo-router';
 
 let token: string | null = null;
 
@@ -13,11 +13,6 @@ const instance: AxiosInstance = axios.create({
 	},
 });
 
-// Request interceptor to inject token
-// Request interceptor to inject token. We attempt to use the in-memory token
-// if available, otherwise fall back to reading the persisted token. Using an
-// async interceptor avoids a race where components fire requests before the
-// app-level `setAuthToken` has been called.
 instance.interceptors.request.use(
 	async (config) => {
 		try {
@@ -36,7 +31,7 @@ instance.interceptors.request.use(
 // Response interceptor to normalize errors
 instance.interceptors.response.use(
 	(res) => res,
-	(error) => {
+	async (error) => {
 		if (error.response) {
 			// server responded with a status other than 2xx
 			const err = {
@@ -44,6 +39,17 @@ instance.interceptors.response.use(
 				data: error.response.data,
 				message: error.response.data?.message || error.message,
 			};
+			
+			// Nếu response trả về 401 (Unauthorized), navigate sang trang login
+			if (error.response.status === 401) {
+				// Clear token và user info
+				setAuthToken(null);
+				await removeToken();
+				await removeUserInfor();
+				// Navigate to login
+				router.replace('/auth/login');
+			}
+			
 			return Promise.reject(err);
 		}
 		// network / timeout / cancelled

@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -15,13 +15,17 @@ export const DetailHeader: React.FC<Props> = ({
 }) => {
   return (
     <View
-      className={`flex-row items-center px-4 pt-4 pb-3 bg-white ${className}`}
+      className={`flex-row items-center justify-between px-4 py-4 bg-white border-b border-slate-100 ${className}`}
     >
-      <TouchableOpacity onPress={onBack} className="p-2">
-        <ChevronLeft size={20} color="#374151" />
-      </TouchableOpacity>
-      <View className="ml-2">
-        <Text className="text-lg font-semibold text-slate-900">{title}</Text>
+      <View className="flex-row items-center flex-1">
+        <TouchableOpacity
+          onPress={onBack}
+          className="w-10 h-10 rounded-full bg-slate-100 items-center justify-center mr-3"
+          activeOpacity={0.7}
+        >
+          <ArrowLeft size={20} color="#1e293b" />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-slate-900">{title}</Text>
       </View>
     </View>
   );

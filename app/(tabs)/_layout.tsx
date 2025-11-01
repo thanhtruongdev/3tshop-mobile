@@ -2,8 +2,9 @@ import { Tabs } from "expo-router";
 import React from "react";
 
 import { HapticTab } from "@/components/haptic-tab";
+import { NotificationIcon } from "@/components/notification/NotificationIcon";
 import { COLORS } from "@/constants/colors";
-import { Box, User } from "lucide-react-native";
+import { Box, ScanLine, User } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -13,7 +14,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          height: 56,
+          height: 60,
         },
       }}
     >
@@ -22,6 +23,22 @@ export default function TabLayout() {
         options={{
           title: "Đơn hàng",
           tabBarIcon: ({ color }) => <Box size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          title: "Quét QR",
+          tabBarIcon: ({ color }) => <ScanLine size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="notification"
+        options={{
+          title: "Thông báo",
+          tabBarIcon: ({ color }) => (
+            <NotificationIcon color={color} size={28} />
+          ),
         }}
       />
       <Tabs.Screen

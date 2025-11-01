@@ -26,7 +26,8 @@
       "package": "com.thanhtruong7103.delivery3tshop",
       "permissions": [
         "android.permission.CAMERA"
-      ]
+      ],
+      "googleServicesFile": "android/app/google-services.json"
     },
     "web": {
       "bundler": "metro",

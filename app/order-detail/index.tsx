@@ -1,14 +1,20 @@
-import { Button } from "@/components/common/button";
+import { GrantPermission } from "@/components/common/grant-permission";
 import DetailHeader from "@/components/order-detail/detail-header";
-import { GrantPermission } from "@/components/order-detail/grant-permission";
 import OrderDetailCard from "@/components/order-detail/order-detail-card";
 import OrderSummary from "@/components/order-detail/order-summary";
 import { COLORS } from "@/constants/colors";
 import { OrderService } from "@/services/order.service";
 import { OrderDetailData } from "@/types/order-detail-response";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { Camera, FileText } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCameraPermission } from "react-native-vision-camera";
 
@@ -64,6 +70,7 @@ export default function OrderDetailScreen() {
       });
     })();
   };
+
   const handleOnShowInvoice = () => {
     router.push({
       pathname: "/invoice",
@@ -77,65 +84,103 @@ export default function OrderDetailScreen() {
         showPermissionModal={showPermissionModal}
         onClose={() => setShowPermissionModal(false)}
       />
+
       {isLoading && (
-        <View className="flex-1 justify-center items-center gap-4">
+        <View className="flex-1 justify-center items-center gap-4 bg-white">
           <ActivityIndicator size="large" color={COLORS.PRIMARY} />
-          <Text className="text-sm text-slate-500 mt-2">
+          <Text className="text-sm text-slate-600 mt-2">
             Đang tải thông tin đơn hàng...
           </Text>
         </View>
       )}
+
       {!order && !isLoading && (
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-sm text-slate-500">Đơn hàng không tồn tại</Text>
+        <View className="flex-1 items-center justify-center bg-white px-8">
+          <View className="w-20 h-20 bg-slate-100 rounded-full items-center justify-center mb-4">
+            <FileText size={40} color="#94a3b8" />
+          </View>
+          <Text className="text-lg font-semibold text-slate-900 mb-2">
+            Không tìm thấy đơn hàng
+          </Text>
+          <Text className="text-sm text-slate-500 text-center">
+            Đơn hàng này không tồn tại hoặc đã bị xóa
+          </Text>
         </View>
       )}
+
       {order && (
-        <View>
+        <View className="flex-1">
           <DetailHeader onBack={() => router.back()} />
-          <OrderSummary order={order} />
+
           <ScrollView
+            className="flex-1"
             contentContainerStyle={{
-              paddingBottom: 24,
+              paddingBottom: 100,
             }}
-            style={{
-              display: "flex",
-              flexGrow: 1,
-            }}
+            showsVerticalScrollIndicator={false}
           >
+            <OrderSummary order={order} />
             <OrderDetailCard order={order} />
           </ScrollView>
         </View>
       )}
 
-      {/* Sticky bottom action bar (pins to screen bottom and respects safe area) */}
+      {/* Sticky bottom action bar */}
       {order && (
         <SafeAreaView
           edges={["bottom"]}
-          className="absolute left-0 right-0 bottom-0 bg-white px-4 py-4 z-50 border-t border-slate-100"
+          className="absolute left-0 right-0 bottom-0 bg-white border-t border-slate-200"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 3,
+            elevation: 5,
+          }}
         >
-          <View
-            className={`flex-row ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "justify-between" : "justify-center"}`}
-          >
-            {order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" && (
-              <>
-                <Button
-                  text="Hoàn tất đơn hàng"
-                  className="px-4 rounded-full w-1/2 "
-                  textClassName="text-white"
-                  onSubmit={handleOnCompleteOrder}
-                  variant={"PRIMARY"}
-                />
-                <View className="w-2" />
-              </>
-            )}
-            <Button
-              text="Xem hóa đơn"
-              onSubmit={handleOnShowInvoice}
-              className={`px-4 rounded-full text-yellow-900 ${order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" ? "w-1/2" : "w-full"}`}
-              variant={"SECONDARY"}
-              textClassName="text-yellow-900"
-            />
+          <View className="px-4 py-3">
+            <View
+              className={`flex-row gap-3 ${
+                order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO"
+                  ? "justify-between"
+                  : "justify-center"
+              }`}
+            >
+              {order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" && (
+                <TouchableOpacity
+                  onPress={handleOnCompleteOrder}
+                  className="flex-1 bg-yellow-900 rounded-xl py-3.5 flex-row items-center justify-center"
+                  activeOpacity={0.8}
+                  style={{
+                    shadowColor: "#78350f",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3,
+                    elevation: 3,
+                  }}
+                >
+                  <Camera size={20} color="#ffffff" />
+                  <Text className="text-white font-bold text-base ml-2">
+                    Hoàn tất đơn
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                onPress={handleOnShowInvoice}
+                className={`${
+                  order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO"
+                    ? "flex-1"
+                    : "flex-1"
+                } border-2 border-yellow-900 rounded-full py-3.5 flex-row items-center justify-center`}
+                activeOpacity={0.8}
+              >
+                <FileText size={20} color="#78350f" />
+                <Text className="text-yellow-900 font-bold text-base ml-2">
+                  Xem hóa đơn
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </SafeAreaView>
       )}

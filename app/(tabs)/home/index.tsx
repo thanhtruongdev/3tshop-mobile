@@ -1,17 +1,17 @@
+import { EmptyOrders } from "@/components/home/EmptyOrders";
+import { HomeHeader } from "@/components/home/HomeHeader";
+import { OrderFilter } from "@/components/home/OrderFilter";
 import { OrderItem } from "@/components/home/order-item";
 import { COLORS } from "@/constants/colors";
-import { TABS } from "@/constants/order-status";
 import { OrderService } from "@/services/order.service";
 import { DonDatHang } from "@/types/order";
 import { getToken } from "@/utils/storage";
 import { useRouter } from "expo-router";
-import { Package2 } from "lucide-react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Text,
-  TouchableOpacity,
+  RefreshControl,
   View,
 } from "react-native";
 
@@ -62,6 +62,32 @@ export default function HomeScreen() {
     });
   };
 
+  // Calculate stats
+  const stats = useMemo(() => {
+    const total = orders.length;
+    const active = orders.filter(
+      (o) => o.TrangThaiDH?.TrangThai === "DANGGIAO"
+    ).length;
+    const today = new Date();
+    const completedToday = orders.filter((o) => {
+      if (o.TrangThaiDH?.TrangThai !== "HOANTAT") return false;
+      const orderDate = o.ThoiGianGiao ? new Date(o.ThoiGianGiao) : null;
+      return orderDate && orderDate.toDateString() === today.toDateString();
+    }).length;
+
+    return { total, active, completedToday };
+  }, [orders]);
+
+  // Count orders by status
+  const orderCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    orders.forEach((order) => {
+      const status = order.TrangThaiDH?.TrangThai || "";
+      counts[status] = (counts[status] || 0) + 1;
+    });
+    return counts;
+  }, [orders]);
+
   const filteredOrders = useMemo(() => {
     if (orders) {
       return orders.filter(
@@ -71,72 +97,55 @@ export default function HomeScreen() {
     return [];
   }, [activeTab, orders]);
 
-  const renderOrderItem = (item: DonDatHang) => (
+  const renderOrderItem = ({ item }: { item: DonDatHang }) => (
     <OrderItem order={item} onPress={handleOrderPress} />
   );
 
   if (loading && !refreshing) {
     return (
-      <View className="flex-col justify-center items-center gap-2 flex-1">
+      <View className="flex-1 bg-slate-50 items-center justify-center">
         <ActivityIndicator size="large" color={COLORS.PRIMARY} />
-        <Text>Đang tải danh sách đơn hàng...</Text>
       </View>
     );
   }
 
   return (
     <View className="flex-1 bg-slate-50">
-      <View className="px-4 pt-4 pb-2">
-        <Text className="text-xl font-bold text-slate-900">
-          Danh sách đơn giao hàng
-        </Text>
-        <Text className="text-sm text-slate-500 mt-1">Lọc theo trạng thái</Text>
-      </View>
+      <HomeHeader
+        totalOrders={stats.total}
+        activeCount={stats.active}
+        completedToday={stats.completedToday}
+      />
 
-      {/* Tabs */}
-      <View className="px-4">
-        <View className="flex-row justify-between items-center">
-          {TABS.map((t) => {
-            const active = t.key === activeTab;
-            return (
-              <TouchableOpacity
-                key={t.key}
-                onPress={() => setActiveTab(t.key)}
-                className={`px-3 py-2 rounded-full ${active ? "bg-yellow-900" : "bg-slate-100"}`}
-              >
-                <Text
-                  className={`${active ? "text-white" : "text-slate-800"} text-md font-medium`}
-                >
-                  {t.label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
+      <OrderFilter
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        counts={orderCounts}
+      />
 
       <FlatList
         data={filteredOrders}
         scrollEnabled={true}
-        renderItem={({ item }) => renderOrderItem(item)}
+        renderItem={renderOrderItem}
         keyExtractor={(item) => item.MaDDH.toString()}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[COLORS.PRIMARY]}
+            tintColor={COLORS.PRIMARY}
+          />
+        }
         contentContainerStyle={{
           paddingHorizontal: 16,
           paddingBottom: 24,
-          paddingTop: 12,
+          paddingTop: 16,
+          flexGrow: 1,
         }}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         showsVerticalScrollIndicator={false}
-        style={{ width: "100%" }}
         ListEmptyComponent={() => (
-          <View className=" flex-col flex-1 gap-4 mt-20 items-center justify-center">
-            <Package2 size={70} color={"#64748b"} />
-            <Text className="text-sm text-slate-500">
-              Không có đơn hàng cho trạng thái này
-            </Text>
-          </View>
+          <EmptyOrders status={activeTab} isFiltered={true} />
         )}
       />
     </View>
