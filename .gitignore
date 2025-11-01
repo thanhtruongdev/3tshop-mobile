@@ -38,9 +38,9 @@ yarn-error.*
 
 app-example
 
-# generated native folders
+# generated native folders - keep google-services.json for EAS Build
 /ios
-/android
+# /android - commented out to allow google-services.json in EAS Build
 
 # IDEs and editors
 .idea/
