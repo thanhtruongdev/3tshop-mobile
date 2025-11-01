@@ -7,7 +7,7 @@ import { ref, update } from "firebase/database";
 export const NotificationService = {
     register: async (notification: RegistrationNotification) : Promise<ApiResponse<RegistrationNotification>> => {
         console.log('Registering notification:', notification);
-        const res = await post<ApiResponse<RegistrationNotification>>('/notifications/register', notification);
+        const res = await post<ApiResponse<RegistrationNotification>>('/api/notifications/register', notification);
         return res;
     },
 

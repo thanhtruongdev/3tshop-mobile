@@ -149,7 +149,7 @@ export default function OrderDetailScreen() {
               {order.ThongTinDonHang?.TrangThai?.Ten === "DANGGIAO" && (
                 <TouchableOpacity
                   onPress={handleOnCompleteOrder}
-                  className="flex-1 bg-yellow-900 rounded-xl py-3.5 flex-row items-center justify-center"
+                  className="flex-1 bg-yellow-900 rounded-full py-3.5 flex-row items-center justify-center"
                   activeOpacity={0.8}
                   style={{
                     shadowColor: "#78350f",
