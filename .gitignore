@@ -41,7 +41,7 @@ app-example
 # generated native folders - keep google-services.json for EAS Build
 /ios
 # /android - commented out to allow google-services.json in EAS Build
-./android
+/android
 
 # IDEs and editors
 .idea/
