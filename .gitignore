@@ -43,6 +43,11 @@ app-example
 # /android - commented out to allow google-services.json in EAS Build
 /android
 
+# Google Services (sensitive files)
+google-services.json
+google-services.json.base64.txt
+GoogleService-Info.plist
+
 # IDEs and editors
 .idea/
 .vscode/
