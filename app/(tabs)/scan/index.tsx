@@ -1,5 +1,6 @@
 import { GrantPermission } from "@/components/common/grant-permission";
 import { COLORS } from "@/constants/colors";
+import { ORDER_STATUS } from "@/constants/order-status";
 import { OrderService } from "@/services/order.service";
 import { NhanVien } from "@/types/user.type";
 import { getUserInfor } from "@/utils/storage";
@@ -100,19 +101,31 @@ export default function ScanScreen() {
 
       if (orderDetail) {
         const deliveryPersonId = orderDetail.ThongTinXuLy?.NguoiGiao?.MaNV;
+        const orderStatus = orderDetail.ThongTinDonHang?.TrangThai?.Ten;
 
-        if (
-          !deliveryPersonId ||
-          (deliveryPersonId && deliveryPersonId !== currentUser.MaNV)
-        ) {
-          Toast.error("Bạn không có quyền xem đơn hàng này");
+        if (orderStatus === "DANGGIAO") {
+          if (
+            !deliveryPersonId ||
+            (deliveryPersonId && deliveryPersonId !== currentUser.MaNV)
+          ) {
+            Toast.error("Bạn không có quyền xem đơn hàng này");
+            setIsProcessing(false);
+            setIsActive(true);
+            setScannedCode(null);
+            return;
+          }
+          Toast.success(
+            `Đã quét mã đơn hàng ${orderId}. Chụp ảnh để xác nhận đã giao hàng.`
+          );
+          router.push(`/camera?orderId=${orderId}`);
+        } else {
+          Toast.error(
+            `Đơn hàng đã ${ORDER_STATUS[orderStatus!][1]}. Không thể xác nhận giao hàng được nữa`
+          );
           setIsProcessing(false);
           setIsActive(true);
           setScannedCode(null);
-          return;
         }
-        Toast.success(`Đã quét mã đơn hàng: ${orderId}`);
-        router.push(`/order-detail?orderId=${orderId}`);
       } else {
         Toast.error("Không tìm thấy đơn hàng");
         setIsProcessing(false);
