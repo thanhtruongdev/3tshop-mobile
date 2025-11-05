@@ -1,4 +1,5 @@
 import { GrantPermission } from "@/components/common/grant-permission";
+import { DeliveryImageModal } from "@/components/order-detail/delivery-image";
 import DetailHeader from "@/components/order-detail/detail-header";
 import OrderDetailCard from "@/components/order-detail/order-detail-card";
 import OrderSummary from "@/components/order-detail/order-summary";
@@ -6,7 +7,7 @@ import { COLORS } from "@/constants/colors";
 import { OrderService } from "@/services/order.service";
 import { OrderDetailData } from "@/types/order-detail-response";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Camera, FileText } from "lucide-react-native";
+import { Camera, FileText, Image as ImageIcon } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -27,6 +28,7 @@ export default function OrderDetailScreen() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPermissionModal, setShowPermissionModal] =
     useState<boolean>(false);
+  const [showImageModal, setShowImageModal] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,19 +47,15 @@ export default function OrderDetailScreen() {
   const handleOnCompleteOrder = () => {
     (async () => {
       if (!hasPermission) {
-        // Ask for permission first (system prompt)
         try {
           const granted = await requestPermission();
-          // requestPermission may return a boolean or void; if falsey, fallback to hasPermission
           const isGranted =
             typeof granted === "boolean" ? granted : hasPermission;
           if (!isGranted) {
-            // show modal to guide user to app settings
             setShowPermissionModal(true);
             return;
           }
         } catch (e) {
-          // if request throws, show modal
           setShowPermissionModal(true);
           return;
         }
@@ -78,11 +76,22 @@ export default function OrderDetailScreen() {
     });
   };
 
+  const handleOnShowDeliveryImage = () => {
+    setShowImageModal(true);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
       <GrantPermission
         showPermissionModal={showPermissionModal}
         onClose={() => setShowPermissionModal(false)}
+      />
+
+      {/* Modal hiển thị ảnh giao hàng */}
+      <DeliveryImageModal
+        visible={showImageModal}
+        imageUrl={order?.ThongTinDonHang?.HinhMinhChung}
+        onClose={() => setShowImageModal(false)}
       />
 
       {isLoading && (
@@ -162,6 +171,26 @@ export default function OrderDetailScreen() {
                   <Camera size={20} color="#ffffff" />
                   <Text className="text-white font-bold text-base ml-2">
                     Hoàn tất đơn
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {order.ThongTinDonHang?.HinhMinhChung && (
+                <TouchableOpacity
+                  onPress={handleOnShowDeliveryImage}
+                  className="flex-1 bg-yellow-900 rounded-full py-3.5 flex-row items-center justify-center"
+                  activeOpacity={0.8}
+                  style={{
+                    shadowColor: "#78350f",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3,
+                    elevation: 3,
+                  }}
+                >
+                  <ImageIcon size={20} color="#ffffff" />
+                  <Text className="text-white font-bold text-base ml-2">
+                    Ảnh giao hàng
                   </Text>
                 </TouchableOpacity>
               )}
