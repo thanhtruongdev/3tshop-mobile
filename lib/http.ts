@@ -1,7 +1,15 @@
 import { BASE_URL } from '@/constants/apis';
 import { getToken, removeToken, removeUserInfor } from '@/utils/storage';
+import { showToast } from '@/utils/toast';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { router } from 'expo-router';
+
+// Biến để track current route từ bên ngoài
+let currentRoute: string = '';
+
+export function setCurrentRoute(route: string) {
+	currentRoute = route;
+}
 
 let token: string | null = null;
 
@@ -32,6 +40,8 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
 	(res) => res,
 	async (error) => {
+		const skipToast = error.config?.skipErrorToast === true;
+		
 		if (error.response) {
 			// server responded with a status other than 2xx
 			const err = {
@@ -40,19 +50,44 @@ instance.interceptors.response.use(
 				message: error.response.data?.message || error.message,
 			};
 			
-			// Nếu response trả về 401 (Unauthorized), navigate sang trang login
+			// Nếu response trả về 401 (Unauthorized)
 			if (error.response.status === 401) {
-				// Clear token và user info
-				setAuthToken(null);
-				await removeToken();
-				await removeUserInfor();
-				// Navigate to login
-				router.replace('/auth/login');
+				// Kiểm tra xem có đang ở màn hình login không
+				const isLoginPage = currentRoute.includes('/auth/login');
+				
+				// Nếu KHÔNG phải đang ở màn hình login thì mới navigate
+				if (!isLoginPage) {
+					// Clear token và user info
+					setAuthToken(null);
+					await removeToken();
+					await removeUserInfor();
+					
+					// Hiển thị toast
+					if (!skipToast) {
+						showToast.error('Phiên đăng nhập đã hết hạn');
+					}
+					
+					// Navigate to login
+					router.replace('/auth/login');
+				} else {
+					// Nếu đang ở màn hình login, chỉ hiển thị toast (nếu không bị skip)
+					if (!skipToast) {
+						showToast.error(err.message || 'Đăng nhập thất bại');
+					}
+				}
+			} else if (!skipToast) {
+				// Hiển thị toast cho các lỗi khác (ngoại trừ 401)
+				showToast.error(err.message || 'Đã xảy ra lỗi');
 			}
 			
 			return Promise.reject(err);
 		}
+		
 		// network / timeout / cancelled
+		if (!skipToast) {
+			showToast.error(error.message || 'Không thể kết nối đến máy chủ');
+		}
+		
 		return Promise.reject({ message: error.message || "Network Error" });
 	}
 );
@@ -61,9 +96,15 @@ export function setAuthToken(t: string | null) {
 	token = t;
 }
 
-type HTTPOptions = AxiosRequestConfig & { useFormData?: boolean };
+type HTTPOptions = AxiosRequestConfig & { 
+	useFormData?: boolean;
+	skipErrorToast?: boolean; // Thêm option để bỏ qua hiển thị toast
+};
 
-type HTTPOptionsTyped = AxiosRequestConfig & { useFormData?: boolean };
+type HTTPOptionsTyped = AxiosRequestConfig & { 
+	useFormData?: boolean;
+	skipErrorToast?: boolean;
+};
 
 export interface HttpError {
 	status?: number;

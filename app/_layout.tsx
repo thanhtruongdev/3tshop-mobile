@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
+import { useRouteTracker } from "@/hooks/useRouteTracker";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -14,6 +15,9 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  // Track current route để xử lý logic 401 trong http interceptor
+  useRouteTracker();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={DefaultTheme}>
