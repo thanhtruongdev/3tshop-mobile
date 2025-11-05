@@ -9,6 +9,7 @@ export type ThongTinDonHang = {
   } | null;
   TongSoLuong: number;
   TongTien: number;
+  HinhMinhChung?: string | null;
 };
 
 export type ThongTinNguoiNhan = {
