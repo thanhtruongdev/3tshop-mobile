@@ -2,18 +2,19 @@ import { rtdb } from "@/lib/firebase";
 import { Notification } from "@/types/notification.type";
 import { getUserInfor } from "@/utils/storage";
 import {
-    DataSnapshot,
-    off,
-    onValue,
-    ref,
+  DataSnapshot,
+  off,
+  onValue,
+  ref,
 } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function useGetNotification() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [maNhanVien, setMaNhanVien] = useState<number | null>(null);
+  const [refetchTrigger, setRefetchTrigger] = useState<number>(0);
 
   // Lấy mã nhân viên từ AsyncStorage
   useEffect(() => {
@@ -89,7 +90,12 @@ export function useGetNotification() {
     return () => {
       off(notifRef, "value", callback);
     };
-  }, [maNhanVien]);
+  }, [maNhanVien, refetchTrigger]);
 
-  return { notifications, loading, error, maNhanVien };
+  // Hàm refetch để reload lại danh sách thông báo
+  const refetch = useCallback(() => {
+    setRefetchTrigger((prev) => prev + 1);
+  }, []);
+
+  return { notifications, loading, error, maNhanVien, refetch };
 }

@@ -1,10 +1,12 @@
 import { EmptyOrders } from "@/components/home/EmptyOrders";
 import { HomeHeader } from "@/components/home/HomeHeader";
-import { OrderFilter } from "@/components/home/OrderFilter";
 import { OrderItem } from "@/components/home/order-item";
+import { OrderFilter } from "@/components/home/OrderFilter";
+import { SearchBar } from "@/components/home/SearchBar";
 import { COLORS } from "@/constants/colors";
 import { OrderService } from "@/services/order.service";
 import { DonDatHang } from "@/types/order";
+import { searchOrders, SortOption, sortOrders } from "@/utils/sorter";
 import { getToken } from "@/utils/storage";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -21,6 +23,8 @@ export default function HomeScreen() {
   const [orders, setOrders] = useState<DonDatHang[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("latest");
 
   const fetchOrders = async () => {
     const token = await getToken();
@@ -89,13 +93,47 @@ export default function HomeScreen() {
   }, [orders]);
 
   const filteredOrders = useMemo(() => {
+    console.log("🔄 Filtering orders:", {
+      totalOrders: orders?.length || 0,
+      activeTab,
+      searchText,
+      sortBy,
+    });
+
     if (orders) {
-      return orders.filter(
+      // 1. Lọc theo trạng thái
+      let filtered = orders.filter(
         (o) => (o.TrangThaiDH?.TrangThai || "") === activeTab
       );
+      console.log(
+        `📋 After status filter (${activeTab}): ${filtered.length} orders`
+      );
+
+      // Log sample order data
+      if (filtered.length > 0) {
+        console.log("📦 Sample order:", {
+          MaDDH: filtered[0].MaDDH,
+          NguoiNhan: filtered[0].NguoiNhan,
+          SDT: filtered[0].SDT,
+          KhachHang: filtered[0].KhachHang?.TenKH,
+        });
+      }
+
+      // 2. Tìm kiếm (search)
+      if (searchText && searchText.trim() !== "") {
+        console.log("🔍 Applying search filter...");
+        filtered = searchOrders(filtered, searchText);
+        console.log(`🔍 After search filter: ${filtered.length} orders`);
+      }
+
+      // 3. Sắp xếp (sort)
+      filtered = sortOrders(filtered, sortBy);
+      console.log(`✅ Final filtered orders: ${filtered.length}`);
+
+      return filtered;
     }
     return [];
-  }, [activeTab, orders]);
+  }, [activeTab, orders, searchText, sortBy]);
 
   const renderOrderItem = ({ item }: { item: DonDatHang }) => (
     <OrderItem order={item} onPress={handleOrderPress} />
@@ -115,6 +153,13 @@ export default function HomeScreen() {
         totalOrders={stats.total}
         activeCount={stats.active}
         completedToday={stats.completedToday}
+      />
+
+      <SearchBar
+        searchText={searchText}
+        onSearchChange={setSearchText}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
 
       <OrderFilter

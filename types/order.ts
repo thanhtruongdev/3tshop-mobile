@@ -25,9 +25,10 @@ export interface DonDatHang {
 	MaKH: number;
 	MaNV_Duyet?: number | null;
 	MaNV_Giao?: number | null;
-	NgayTao: string; // ISO date string
+	NgayTao: string; 
+	NgayCapNhat: string; 
 	DiaChiGiao?: string;
-	ThoiGianGiao?: string; // ISO date string
+	ThoiGianGiao?: string;
 	NguoiNhan?: string;
 	SDT?: string;
 	MaTTDH?: number;

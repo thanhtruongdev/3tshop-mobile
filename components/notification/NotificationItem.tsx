@@ -87,7 +87,6 @@ export const NotificationItem = ({
 
           <Text
             className={`text-sm ${isUnread ? "text-slate-700" : "text-slate-500"} mb-2`}
-            numberOfLines={2}
           >
             {notification.noiDung}
           </Text>

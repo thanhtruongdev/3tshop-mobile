@@ -22,7 +22,8 @@ export default function NotificationScreen() {
   const [filter, setFilter] = useState<"all" | "unread">("all");
   const [refreshing, setRefreshing] = useState(false);
 
-  const { notifications, loading, error, maNhanVien } = useGetNotification();
+  const { notifications, loading, error, maNhanVien, refetch } =
+    useGetNotification();
 
   // Đếm số thông báo chưa đọc
   const unreadCount = useMemo(() => {
@@ -40,11 +41,19 @@ export default function NotificationScreen() {
   // Handle refresh
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    // Hook sẽ tự động cập nhật realtime, chỉ cần delay một chút để UX tốt hơn
-    setTimeout(() => {
+    try {
+      // Gọi hàm refetch để reload dữ liệu từ Firebase
+      if (refetch) {
+        refetch();
+      }
+      // Delay một chút để UX tốt hơn
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } catch (err) {
+      console.error("Error refreshing notifications:", err);
+    } finally {
       setRefreshing(false);
-    }, 500);
-  }, []);
+    }
+  }, [refetch]);
 
   // Xử lý khi nhấn vào thông báo
   const handleNotificationPress = async (notification: Notification) => {
