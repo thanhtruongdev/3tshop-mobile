@@ -15,7 +15,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Toast } from "toastify-react-native";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -32,18 +31,12 @@ export default function LoginScreen() {
       try {
         const result = await AuthService.login({ email, password });
         if (result) {
-          Toast.success("Đăng nhập thành công");
           router.replace("/(tabs)/home");
-          setIsLoading(false);
-        } else {
-          Toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
-          setIsLoading(false);
         }
       } catch (error) {
         console.warn("Login error:", error);
-        Toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+      } finally {
         setIsLoading(false);
-        return;
       }
     }
   };
