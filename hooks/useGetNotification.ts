@@ -70,9 +70,9 @@ export function useGetNotification() {
         
         console.log('Parsed notifications:', data);
         
-        // Sắp xếp giảm dần theo ngày tạo
+        // Sắp xếp giảm dần theo ngày tạo (timestamp mới nhất lên đầu)
         data.sort(
-          (a, b) => (b.ngayTao?._seconds ?? 0) - (a.ngayTao?._seconds ?? 0)
+          (a, b) => (b.ngayTao ?? 0) - (a.ngayTao ?? 0)
         );
         
         setNotifications(data);

@@ -64,7 +64,7 @@ export default function OrderDetailScreen() {
       // permission is available
       router.navigate({
         pathname: "/camera",
-        params: { orderId: id },
+        params: { orderId: id, isNavigateFromOrderDetail: "true" },
       });
     })();
   };

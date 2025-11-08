@@ -18,8 +18,8 @@ export type Notification = {
         screen?: string;
     };
     trangThai: "unread" | "read";
-    ngayGui: { "_seconds": 1710000160 };
-    ngayTao: { "_seconds": 1710000160 };
+    ngayGui: number;
+    ngayTao: number;
     ngayDoc: string | null;
 
 }

@@ -97,7 +97,7 @@ export default function NotificationScreen() {
       Toast.success("Đã đánh dấu tất cả thông báo là đã đọc");
     } catch (err) {
       console.error("Error marking all as read:", err);
-      Alert.alert("Lỗi", "Không thể đánh dấu tất cả thông báo");
+      Toast.error("Không thể đánh dấu tất cả thông báo");
     }
   };
 
