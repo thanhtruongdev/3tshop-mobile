@@ -6,7 +6,14 @@ import { getRotationStyle } from "@/utils/animation";
 import { getFileUri } from "@/utils/get-uri";
 import { uploadImageToCloudinary } from "@/utils/upload-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { ArrowRight, Check, RefreshCw, X, Zap, ZapOff } from "lucide-react-native";
+import {
+  ArrowRight,
+  Check,
+  RefreshCw,
+  X,
+  Zap,
+  ZapOff,
+} from "lucide-react-native";
 import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -22,7 +29,7 @@ import { Toast } from "toastify-react-native";
 
 export default function CameraPage() {
   const camera = useRef<Camera>(null);
-  const { orderId } = useLocalSearchParams();
+  const { orderId, isNavigateFromOrderDetail } = useLocalSearchParams();
   const [defaultCamera, setDefaultCamera] = React.useState<"back" | "front">(
     "back"
   );
@@ -145,19 +152,23 @@ export default function CameraPage() {
         />
       </View>
       <View className="absolute bottom-24 flex-col w-full justify-evenly items-center gap-8">
-        <View className="bg-yellow-900/50 rounded-lg pl-4 py-2 flex-row gap-4 items-center">
-          <Text className="text-white">
-            {`Đang xác nhận giao hàng cho \nđơn hàng #${orderId}`}
-          </Text>
-          <TouchableOpacity
-            className="flex-row justify-center items-center mr-3 p-2 gap-1 rounded-md border border-yellow-100/70"
-            activeOpacity={0.7}
-            onPress={() => router.navigate(`/order-detail?orderId=${orderId}`)}
-          >
-            <Text className="text-white font-semibold">Xem chi tiết</Text>
-            <ArrowRight size={18} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+        {!isNavigateFromOrderDetail && (
+          <View className="bg-yellow-900/50 rounded-lg pl-4 py-2 flex-row gap-4 items-center">
+            <Text className="text-white">
+              {`Đang xác nhận giao hàng cho \nđơn hàng #${orderId}`}
+            </Text>
+            <TouchableOpacity
+              className="flex-row justify-center items-center mr-3 p-2 gap-1 rounded-md border border-yellow-100/70"
+              activeOpacity={0.7}
+              onPress={() =>
+                router.navigate(`/order-detail?orderId=${orderId}`)
+              }
+            >
+              <Text className="text-white font-semibold">Xem chi tiết</Text>
+              <ArrowRight size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        )}
         <View className="flex-row w-full justify-evenly items-center">
           <AnimatedIconButton
             onPress={swapCamera}
